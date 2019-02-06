@@ -33,7 +33,7 @@ void setup() {
 void loop() {
   int pin = detectPin();
   int val = getSensorValue(pin);
-  if (val < 0) {
+  if (val > 0) {
     setValueToPin(val, pin); 
   }
   delay(3000);
@@ -41,7 +41,10 @@ void loop() {
   delay(3000);
 }
 
+
+
 void setValueToPin(int val, int pin){
+  Serial.println("---------------Start setValueToPin ---------------");
   if (pin == sensorPin1) {
     sensorValue1 = val;
   } else if (pin == sensorPin2) {
@@ -53,6 +56,18 @@ void setValueToPin(int val, int pin){
   } else if (pin == sensorPin5) {
     sensorValue5 = val;
   }
+  Serial.println("sensor value table");
+  Serial.print("sensorPin1: ");
+  Serial.println(sensorValue1);
+  Serial.print("sensorPin2: ");
+  Serial.println(sensorValue2);
+  Serial.print("sensorPin3: ");
+  Serial.println(sensorValue3);
+  Serial.print("sensorPin4: ");
+  Serial.println(sensorValue4);
+  Serial.print("sensorPin5: ");
+  Serial.println(sensorValue5);
+  Serial.println("---------------End setValueToPin ---------------");
 }
 
 //センサーの値の取得
@@ -66,15 +81,15 @@ int getSensorValue(int pin) {
     delay(1000);
     int value = analogRead(pin);
     values[count] = value;
-    Serial.print(value);
+    Serial.println(value);
     count++;
   }
-  Serial.println("");
   while(count < 200) {
     delay(1000);
     int value = analogRead(pin);
     int i = count % 10;
     values[i] = value;
+    Serial.println(value);
 
     // check value
     int minValue = values[0];
@@ -83,10 +98,6 @@ int getSensorValue(int pin) {
       minValue = min(values[t],minValue);
       maxValue = max(values[t],maxValue);
     }
-    Serial.print("min:");
-    Serial.println(minValue);
-    Serial.print("max:");
-    Serial.println(maxValue);
     if ((maxValue - minValue) < 2) {
       val = maxValue;
       break;
