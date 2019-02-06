@@ -26,8 +26,8 @@ void setup() {
   
   // setup sigfox
   if(!transceiver.begin()) stop(F("Unable to init SIGFOX module"));
-  Serial.println(F("Waiting 5 seconds...."));
-  delay(5000);
+  Serial.println(F("Waiting 2 seconds...."));
+  delay(2000);
 }
 
 void loop() {
@@ -56,29 +56,46 @@ void setValueToPin(int val, int pin){
 }
 
 int getSensorValue(int pin) {
- // get sensorValue
- int val = -1;
- int interval = 1000;
- int count = 0;
- int values[10];
- while(count < 200) {
-  delay(1000);
-  int value = analogRead(pin);
-  int i = count % 10;
-  values[i] = value;
-  int minValue = values[0];
-  int maxValue = values[0];
-  for (int t=1;t < 10; t++) {
-    minValue = min(values[t],minValue);
-    maxValue = max(values[t],maxValue);
+  Serial.println("---------------Start getSensorValue ---------------");
+  int val = -1;
+  int interval = 1000;
+  int count = 0;
+  int values[10];
+  while(count < 9) {
+    delay(1000);
+    int value = analogRead(pin);
+    values[count] = value;
+    Serial.print(value);
+    count++;
   }
-  if ((maxValue - minValue) < 2) {
-    val = maxValue;
-    break;
+  Serial.println("");
+  while(count < 200) {
+    delay(1000);
+    int value = analogRead(pin);
+    int i = count % 10;
+    values[i] = value;
+
+    // check value
+    int minValue = values[0];
+    int maxValue = values[0];
+    for (int t=1;t < 10; t++) {
+      minValue = min(values[t],minValue);
+      maxValue = max(values[t],maxValue);
+    }
+    Serial.print("min:");
+    Serial.println(minValue);
+    Serial.print("max:");
+    Serial.println(maxValue);
+    if ((maxValue - minValue) < 2) {
+      val = maxValue;
+      break;
+    }
+    count++;
   }
-  count++;
- }
- return val;
+  Serial.print("sensor value: ");
+  Serial.println(val);
+  Serial.println("---------------End getSensorValue ---------------");
+  return val;
 }
 
 //利用するピン番号を返す
@@ -93,27 +110,20 @@ int detectPin() {
       int value = int(val) - 48;
       switch (value) {
         case 1:
-          targetPin = A0;
-          break;
+          targetPin = A0; break;
         case 2:
-          targetPin = A1;
-          break;
+          targetPin = A1; break;
         case 3:
-          targetPin = A2;
-          break;
+          targetPin = A2; break;
         case 4:
-          targetPin = A3;
-          break;
+          targetPin = A3; break;
         case 5:
-          targetPin = A4;
-          break;
+          targetPin = A4; break;
       }
       delay(100);
       if (targetPin < 0) {
         Serial.println("Please try again");
-      } else {
-        break;
-      }
+      } else { break; }
     }
   }
   Serial.print("targetPin is ");
