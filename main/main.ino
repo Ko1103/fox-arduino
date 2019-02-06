@@ -81,36 +81,44 @@ int getSensorValue(int pin) {
  return val;
 }
 
+//利用するピン番号を返す
 int detectPin() {
+  Serial.println("---------------Start detectPin---------------");
   Serial.println("Which sensor you want to masure??");
-  while (true) {
+  int targetPin = -1;
+  while(true) {
+    // ここがなぜか二回trueになる　二回目はavairableが0のままだが通ってしまう
     if (Serial.available() > 0) { 
-      break;
+      char val = Serial.read();
+      int value = int(val) - 48;
+      switch (value) {
+        case 1:
+          targetPin = A0;
+          break;
+        case 2:
+          targetPin = A1;
+          break;
+        case 3:
+          targetPin = A2;
+          break;
+        case 4:
+          targetPin = A3;
+          break;
+        case 5:
+          targetPin = A4;
+          break;
+      }
+      delay(100);
+      if (targetPin < 0) {
+        Serial.println("Please try again");
+      } else {
+        break;
+      }
     }
   }
-  int pinNumber = Serial.read();
-  
-  if (pinNumber < 0) { // fail to get pin number;
-    Serial.println("Fail to get sensor number");
-    return -1;
-  }
-  Serial.print("OK, Start get value of sensor");
-  Serial.println(pinNumber);
-  int targetPin = -1;
-  if (pinNumber == 1) {
-    targetPin = A0;
-  } else if (pinNumber == 2) {
-    targetPin = A1;
-  } else if (pinNumber == 3) {
-    targetPin = A2;
-  } else if (pinNumber == 4) {
-    targetPin = A3;
-  } else if (pinNumber == 5) {
-    targetPin = A4;
-  } else {
-    Serial.println("fail to detect pin..");
-    return -1;
-  }
+  Serial.print("targetPin is ");
+  Serial.println(targetPin);
+  Serial.println("---------------End detectPin---------------");
   return targetPin;
 }
 
