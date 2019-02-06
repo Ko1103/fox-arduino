@@ -55,6 +55,7 @@ void setValueToPin(int val, int pin){
   }
 }
 
+//センサーの値の取得
 int getSensorValue(int pin) {
   Serial.println("---------------Start getSensorValue ---------------");
   int val = -1;
