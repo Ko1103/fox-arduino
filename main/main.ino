@@ -31,14 +31,14 @@ void setup() {
 }
 
 void loop() {
-  int pin = detectPin();
-  int val = getSensorValue(pin);
-  if (val > 0) {
-    setValueToPin(val, pin); 
-  }
-  delay(3000);
-  sendMessage();
-  delay(3000);
+//  int pin = detectPin();
+//  int val = getSensorValue(pin);
+//  if (val > 0) {
+//    setValueToPin(val, pin); 
+//  }
+//  sendMessage();
+//  delay(3000);
+  dummyMessage();
 }
 
 
@@ -90,7 +90,6 @@ int getSensorValue(int pin) {
     int i = count % 10;
     values[i] = value;
     Serial.println(value);
-
     // check value
     int minValue = values[0];
     int maxValue = values[0];
@@ -113,6 +112,7 @@ int getSensorValue(int pin) {
 //利用するピン番号を返す
 int detectPin() {
   Serial.println("---------------Start detectPin---------------");
+  // set pin manually
   Serial.println("Which sensor you want to masure??");
   int targetPin = -1;
   while(true) {
@@ -138,6 +138,20 @@ int detectPin() {
       } else { break; }
     }
   }
+  
+  // set pin automatically 
+//  int targetPin = A0;
+//  if (sensorValue1 == 0) {
+//    targetPin = A0;
+//  } else if (sensorValue2 == 0) {
+//    targetPin = A1;
+//  } else if (sensorValue3 == 0) {
+//    targetPin = A2;
+//  } else if (sensorValue4 == 0) {
+//    targetPin = A3;
+//  } else if (sensorValue5 == 0) {
+//    targetPin = A4;
+//  }
   Serial.print("targetPin is ");
   Serial.println(targetPin);
   Serial.println("---------------End detectPin---------------");
@@ -146,6 +160,7 @@ int detectPin() {
 
 // send values to sigfox
 void sendMessage() {
+  Serial.println("---------------Start sendMessage---------------");
   bool canSend = true;
   if (sensorValue1 == 0) {
     canSend = false;
@@ -189,4 +204,21 @@ void sendMessage() {
   sensorValue3 = 0;
   sensorValue4 = 0;
   sensorValue5 = 0;
+  Serial.print("wait for 12 minutes");
+  int t = 0;
+  while(t < 240){
+    delay(30000);
+    t++;
+  }
+  Serial.println("---------------End sendMessage---------------");
+}
+
+void dummyMessage() {
+  sensorValue1 = 675;
+  sensorValue2 = 356;
+  sensorValue3 = 524;
+  sensorValue4 = 524;
+  sensorValue5 = 741;
+  sendMessage();
+  delay(2000);
 }
