@@ -32,13 +32,13 @@ void setup() {
 
 void loop() {
 //  int pin = detectPin();
-//  int val = getSensorValue(pin);
-//  if (val > 0) {
-//    setValueToPin(val, pin); 
-//  }
-//  sendMessage();
-//  delay(3000);
-  dummyMessage();
+  int pin = autoDetectPin();
+  int val = getSensorValue(pin);
+  if (val > 0) {
+    setValueToPin(val, pin); 
+  }
+  sendMessage();
+//  dummyMessage();
 }
 
 
@@ -153,7 +153,7 @@ int detectPin() {
 //    targetPin = A4;
 //  }
   Serial.print("targetPin is ");
-  Serial.println(targetPin);
+  Serial.println(targetPin - 13);
   Serial.println("---------------End detectPin---------------");
   return targetPin;
 }
@@ -194,7 +194,12 @@ void sendMessage() {
   message.concat(value4);
   message.concat("5");
   message.concat(value5);
-  transceiver.sendMessage(message);
+//  transceiver.sendMessage(message);
+  
+  transceiver.sendMessageAndGetResponse(message, response);
+  Serial.println("ここまできてるよー");
+  Serial.print(F("Downlink response is "));  Serial.println(response);
+  delay(10000);
   Serial.println("Sending message to sigfox");
   Serial.print("message value: ");
   Serial.println(message);
@@ -204,17 +209,18 @@ void sendMessage() {
   sensorValue3 = 0;
   sensorValue4 = 0;
   sensorValue5 = 0;
-  Serial.print("wait for 12 minutes");
-  int t = 0;
-  while(t < 240){
-    delay(30000);
-    t++;
-  }
+//  Serial.print("wait for 12 minutes");
+//  int t = 0;
+//  while(t < 240){
+//    delay(30000);
+//    t++;
+//  }
+  delay(10000);
   Serial.println("---------------End sendMessage---------------");
 }
 
 void dummyMessage() {
-  sensorValue1 = 675;
+  sensorValue1 = 811;
   sensorValue2 = 356;
   sensorValue3 = 524;
   sensorValue4 = 524;
